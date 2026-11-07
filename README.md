@@ -1,4 +1,4 @@
-# Bed Temp — adjust an Eight Sleep Pod from a Garmin fenix
+# Adjust an Eight Sleep Pod from a Garmin fenix
 
 Press **UP** on the watch to make your side of the bed warmer, **DOWN** to make it
 cooler, without reaching for a phone. Built so two people can each control their
@@ -14,7 +14,7 @@ UP/DOWN               on your phone                 holds the Eight Sleep login,
                                                     picks the side per request
 ```
 
-## Why a relay
+## Relay
 
 Connect IQ watch apps can only reach the internet through the Garmin Connect
 app on the phone, must use HTTPS, and have very little memory. Eight Sleep has
@@ -25,7 +25,7 @@ that and gives the watch two trivial calls: `GET /status` and `POST /adjust`.
 The relay runs on Cloudflare Workers' free tier, so there is no server to keep
 awake at night.
 
-## Repository layout
+## Repo layout
 
 | Path | What |
 |---|---|
@@ -119,12 +119,11 @@ Prefer VS Code? Install Garmin's **Monkey C** extension, open `watch/`, and use
 
 - Open the app before sleep and leave it running. It is a full app, not a
   widget, so it stays in the foreground all night. BACK must be pressed twice
-  within two seconds to exit, so a sleepy mis-press doesn't close it. Assign a
+  within two seconds to exit. Assign a
   hotkey (Settings → System → Hot Keys) so it's one long press to open.
-- Phone on the nightstand with Bluetooth on and Garmin Connect running. On
+- Phone with Bluetooth on and Garmin Connect running. On
   iPhone the Connect app must stay open in the background (don't swipe it
   away); on Android it doesn't matter.
-- Turn the backlight down for the night so a press doesn't light the room.
 - A manual change behaves like changing the temperature in the Eight Sleep app:
   Autopilot keeps running and may move the level at its next schedule step.
 
