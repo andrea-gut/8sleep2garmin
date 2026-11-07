@@ -39,7 +39,7 @@ class EightSleepView extends WatchUi.View {
     function adjust(delta) {
         System.println("adjust " + delta);
         pendingDelta += delta;
-        status = (pendingDelta > 0 ? "Warmer +" : "Cooler ") + pendingDelta;
+        status = (pendingDelta > 0 ? "Warmer +" : "Cooler ") + toAppScale(pendingDelta);
         statusIsError = false;
         sendTimer.stop();
         sendTimer.start(method(:onSendTimer), Config.COALESCE_MS, false);
@@ -166,9 +166,17 @@ class EightSleepView extends WatchUi.View {
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
-    function formatLevel(n) {
+    // The Eight Sleep app shows -10..+10; the API works in -100..+100.
+    // Show the app's scale so the watch and the phone agree.
+    function formatLevel(raw) {
+        var n = toAppScale(raw);
         if (n > 0) { return "+" + n; }
         return "" + n;
+    }
+
+    function toAppScale(raw) {
+        if (raw >= 0) { return (raw + 5) / 10; }
+        return -((-raw + 5) / 10);
     }
 
     function clamp(n) {

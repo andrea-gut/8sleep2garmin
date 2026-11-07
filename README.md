@@ -4,9 +4,10 @@ Press **UP** on the watch to make your side of the bed warmer, **DOWN** to make 
 cooler, without reaching for a phone. Built so two people can each control their
 own side from their own watch through one shared relay.
 
-Each press moves the Eight Sleep level by 10 on its -100..100 scale (roughly
-2-3 °F). Quick repeated presses are combined into a single change. The watch
-shows the target level, an approximate temperature, and a status line.
+Each press moves the level by one step on the same -10..+10 scale the Eight
+Sleep app shows (roughly 2-3 °F; the API underneath works in -100..+100).
+Quick repeated presses are combined into a single change. The watch shows the
+target level, an approximate temperature, and a status line.
 
 ```
  fenix ──Bluetooth──▶ Garmin Connect app ──HTTPS──▶ relay (Cloudflare Worker) ──▶ Eight Sleep cloud ──▶ Pod
