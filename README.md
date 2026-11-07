@@ -166,7 +166,3 @@ Connect didn't answer · `Bad secret` `Config.mc` doesn't match the relay ·
 cd relay && npm test          # 11 tests against a fake Eight Sleep API
 cd relay && npx wrangler dev  # local relay, needs relay/.dev.vars (see .dev.vars.example)
 ```
-
-## License
-
-MIT, see `LICENSE`.
