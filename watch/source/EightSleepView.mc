@@ -17,21 +17,41 @@ class EightSleepView extends WatchUi.View {
 
     var sendTimer;
     var refreshTimer;
+    var clockTimer;
 
     function initialize() {
         View.initialize();
         sendTimer = new Timer.Timer();
         refreshTimer = new Timer.Timer();
+        clockTimer = new Timer.Timer();
     }
 
     function onShow() {
         refresh();
         refreshTimer.start(method(:onRefreshTimer), Config.REFRESH_MS, true);
+        clockTimer.start(method(:onClockTimer), 30 * 1000, true);
     }
 
     function onHide() {
         refreshTimer.stop();
         sendTimer.stop();
+        clockTimer.stop();
+    }
+
+    function onClockTimer() {
+        WatchUi.requestUpdate();
+    }
+
+    // "11:42" or "23:42" following the watch's own time format setting.
+    function clockText() {
+        var t = System.getClockTime();
+        var hour = t.hour;
+        var settings = System.getDeviceSettings();
+        if (settings != null && !settings.is24Hour) {
+            hour = hour % 12;
+            if (hour == 0) { hour = 12; }
+        }
+        return hour.format("%d") + ":" + t.min.format("%02d");
     }
 
     // ---- actions ----
@@ -128,10 +148,15 @@ class EightSleepView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
 
+        // clock
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(cx, (h * 0.22).toNumber(), Graphics.FONT_NUMBER_MEDIUM, clockText(),
+                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+
         // side label
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var sideText = side.equals("") ? "Bed" : (side.equals("me") ? "My side" : side + " side");
-        dc.drawText(cx, (h * 0.17).toNumber(), Graphics.FONT_SMALL, sideText,
+        dc.drawText(cx, (h * 0.39).toNumber(), Graphics.FONT_XTINY, sideText,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 
         // big level number (shows the pending target while presses are queued)
@@ -145,24 +170,12 @@ class EightSleepView extends WatchUi.View {
             color = shown > 0 ? Graphics.COLOR_ORANGE : (shown < 0 ? Graphics.COLOR_BLUE : Graphics.COLOR_WHITE);
         }
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.45).toNumber(), Graphics.FONT_NUMBER_HOT, levelText,
+        dc.drawText(cx, (h * 0.57).toNumber(), Graphics.FONT_NUMBER_HOT, levelText,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-
-        // approximate temperature
-        if (shown != null) {
-            dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(cx, (h * 0.62).toNumber(), Graphics.FONT_TINY, "~" + approxF(shown) + " F",
-                        Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        }
 
         // status line
         dc.setColor(statusIsError ? Graphics.COLOR_RED : Graphics.COLOR_GREEN, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.75).toNumber(), Graphics.FONT_SMALL, status,
-                    Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-
-        // button hints
-        dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, (h * 0.83).toNumber(), Graphics.FONT_XTINY, "UP warm   DOWN cool",
+        dc.drawText(cx, (h * 0.78).toNumber(), Graphics.FONT_SMALL, status,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
@@ -185,18 +198,4 @@ class EightSleepView extends WatchUi.View {
         return n;
     }
 
-    // Rough mapping of the -100..100 level to Fahrenheit, interpolated from
-    // Eight Sleep's published points (55F at -100, 81F at 0, 111F at +100).
-    function approxF(n) {
-        var xs = [-100, -50, -25, 0, 25, 50, 75, 100];
-        var ys = [55, 70, 75, 81, 89, 97, 105, 111];
-        if (n <= xs[0]) { return ys[0]; }
-        for (var i = 1; i < xs.size(); i++) {
-            if (n <= xs[i]) {
-                var t = (n - xs[i - 1]).toFloat() / (xs[i] - xs[i - 1]);
-                return (ys[i - 1] + t * (ys[i] - ys[i - 1]) + 0.5).toNumber();
-            }
-        }
-        return ys[ys.size() - 1];
-    }
 }

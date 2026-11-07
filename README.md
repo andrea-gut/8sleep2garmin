@@ -7,7 +7,8 @@ own side from their own watch through one shared relay.
 Each press moves the level by one step on the same -10..+10 scale the Eight
 Sleep app shows (roughly 2-3 °F; the API underneath works in -100..+100).
 Quick repeated presses are combined into a single change. The watch shows the
-target level, an approximate temperature, and a status line.
+time (since the app covers the watch face all night), the side it controls, the
+target level, and a status line.
 
 ```
  fenix ──Bluetooth──▶ Garmin Connect app ──HTTPS──▶ relay (Cloudflare Worker) ──▶ Eight Sleep cloud ──▶ Pod
