@@ -1,0 +1,14 @@
+# Personal / secret — never commit these
+watch/source/Config.mc
+relay/.dev.vars
+TONIGHT.md
+
+# Build output
+watch/bin/
+relay/node_modules/
+relay/.wrangler/
+
+# OS / tooling noise
+.DS_Store
+__pycache__/
+*.pyc

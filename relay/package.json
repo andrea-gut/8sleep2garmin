@@ -1,0 +1,13 @@
+{
+  "name": "eight-sleep-relay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test .",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

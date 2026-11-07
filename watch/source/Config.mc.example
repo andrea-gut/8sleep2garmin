@@ -1,0 +1,24 @@
+// Copy this file to Config.mc and fill in your values. Config.mc is git-ignored.
+
+module Config {
+    // Base URL of your deployed relay, no trailing slash. Must be https.
+    const RELAY_URL = "https://eight-sleep-relay.YOUR-SUBDOMAIN.workers.dev";
+
+    // Must match the RELAY_SECRET you set with `wrangler secret put RELAY_SECRET`.
+    const RELAY_SECRET = "REPLACE_WITH_YOUR_RELAY_SECRET";
+
+    // Which side of the bed THIS watch controls: "left", "right", or "me"
+    // (me = the side belonging to the Eight Sleep login the relay uses).
+    // build.sh rewrites this line:  ./build.sh fenix7 left
+    const SIDE = "left";
+
+    // How much one UP/DOWN press changes the Eight Sleep level (-100..100 scale).
+    // 10 is roughly 2-3 degrees F in the middle of the range.
+    const STEP = 10;
+
+    // Presses within this window are combined into one request to the relay.
+    const COALESCE_MS = 700;
+
+    // How often to re-read the current level from the bed while the app is open.
+    const REFRESH_MS = 10 * 60 * 1000;
+}

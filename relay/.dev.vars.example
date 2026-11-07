@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `npx wrangler dev` (local testing). Never commit .dev.vars.
+EIGHT_EMAIL=you@example.com
+EIGHT_PASSWORD=your-eight-sleep-app-password
+RELAY_SECRET=pick-a-long-random-string

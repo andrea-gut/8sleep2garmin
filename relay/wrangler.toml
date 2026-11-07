@@ -1,0 +1,25 @@
+name = "eight-sleep-relay"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+# Which side of the bed the watch controls:
+#   "me"    = the side belonging to the login you use (simplest if you have your own Eight Sleep user)
+#   "left"  = whoever is assigned to the left side of the Pod
+#   "right" = whoever is assigned to the right side of the Pod
+# Run `curl .../debug` after deploying to see which user id is on which side.
+SIDE = "me"
+
+# Caches the Eight Sleep token so we don't log in on every button press
+# (Eight Sleep rate-limits logins). Create with:
+#   npx wrangler kv namespace create TOKENS
+# and paste the id it prints below. Optional; without it the worker still works
+# but logs in more often.
+[[kv_namespaces]]
+binding = "TOKENS"
+id = "d9fc65e2cb754c52a56437a561b58e75"
+
+# Secrets are NOT put in this file. Set them with:
+#   npx wrangler secret put EIGHT_EMAIL
+#   npx wrangler secret put EIGHT_PASSWORD
+#   npx wrangler secret put RELAY_SECRET
