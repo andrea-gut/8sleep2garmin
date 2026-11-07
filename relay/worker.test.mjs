@@ -93,6 +93,15 @@ test("adjust turns the side on when it was off", async () => {
   assert.deepEqual(puts, [{ currentState: { type: "smart" } }, { currentLevel: -10 }]);
 });
 
+test("a side in a smart phase counts as on: no extra state write", async () => {
+  const f = fakeEight({ state: { level: 20, type: "smart:bedtime" } });
+  const r = await call(env(), "POST", "/adjust", { delta: 10 });
+  assert.equal(r.json.level, 30);
+  assert.equal(r.json.state, "smart:bedtime");
+  const puts = f.calls.filter((c) => c.method === "PUT").map((c) => c.body);
+  assert.deepEqual(puts, [{ currentLevel: 30 }]);
+});
+
 test("SIDE=right controls the partner's user id", async () => {
   const f = fakeEight();
   const r = await call(env({ SIDE: "right" }), "GET", "/status");

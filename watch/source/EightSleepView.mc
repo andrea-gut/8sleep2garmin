@@ -103,7 +103,8 @@ class EightSleepView extends WatchUi.View {
             if (data["level"] != null) { level = data["level"]; }
             if (data["state"] != null) { state = data["state"]; }
             if (data["side"] != null) { side = data["side"]; }
-            status = (state != null && !state.equals("smart")) ? "Side is off" : "Ready";
+            // Eight Sleep reports "off", or a phase such as "smart:bedtime" when on.
+            status = (state != null && state.equals("off")) ? "Side is off" : "Ready";
             statusIsError = false;
         } else {
             setError(Relay.describe(code));

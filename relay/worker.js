@@ -109,7 +109,8 @@ async function handle(request, env) {
       const level = clamp(current + delta);
       await ensureOn(env, s, t);
       await setLevel(env, s, level);
-      return json({ side: s.side, level, state: "smart", previous: current });
+      const state = isOff(t) ? "smart" : t.currentState.type;
+      return json({ side: s.side, level, state, previous: current });
     }
     case "POST /set": {
       const level = clamp(toInt(body.level, "level"));
@@ -117,7 +118,7 @@ async function handle(request, env) {
       const t = await getTemperature(env, s);
       await ensureOn(env, s, t);
       await setLevel(env, s, level);
-      return json({ side: s.side, level, state: "smart" });
+      return json({ side: s.side, level, state: isOff(t) ? "smart" : t.currentState.type });
     }
     case "POST /on": {
       const s = await session(env, side);
@@ -267,9 +268,15 @@ async function setState(env, s, type) {
   return api(env, s, "PUT", tempUrl(s), { currentState: { type } });
 }
 
-async function ensureOn(env, s, t) {
+// Eight Sleep reports phases such as "smart:bedtime", "smart:initial",
+// "smart:final" or "timeBased" while a side is on; only "off" means off.
+function isOff(t) {
   const type = t?.currentState?.type;
-  if (type !== "smart") await setState(env, s, "smart");
+  return !type || type === "off";
+}
+
+async function ensureOn(env, s, t) {
+  if (isOff(t)) await setState(env, s, "smart");
 }
 
 function summarize(s, t) {
