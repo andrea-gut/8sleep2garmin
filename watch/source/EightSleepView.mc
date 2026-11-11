@@ -1,3 +1,4 @@
+using Toybox.Application;
 using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Timer;
@@ -14,6 +15,7 @@ class EightSleepView extends WatchUi.View {
     var busy = false;
     var status = "Connecting";
     var statusIsError = false;
+    var closedNote = null;     // "closed 22:01 3:20" until the first button press
 
     var sendTimer;
     var refreshTimer;
@@ -24,6 +26,14 @@ class EightSleepView extends WatchUi.View {
         sendTimer = new Timer.Timer();
         refreshTimer = new Timer.Timer();
         clockTimer = new Timer.Timer();
+        var times = Application.getApp().closedTimes;
+        if (times != null) {
+            closedNote = "closed";
+            for (var i = 0; i < times.size(); i++) {
+                closedNote = closedNote + " " + times[i];
+            }
+            System.println(closedNote);
+        }
     }
 
     function onShow() {
@@ -58,6 +68,7 @@ class EightSleepView extends WatchUi.View {
 
     function adjust(delta) {
         System.println("adjust " + delta);
+        closedNote = null;
         pendingDelta += delta;
         status = (pendingDelta > 0 ? "Warmer +" : "Cooler ") + toAppScale(pendingDelta);
         statusIsError = false;
@@ -156,6 +167,7 @@ class EightSleepView extends WatchUi.View {
         // side label
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var sideText = side.equals("") ? "Bed" : (side.equals("me") ? "My side" : side + " side");
+        if (closedNote != null) { sideText = closedNote; }
         dc.drawText(cx, (h * 0.39).toNumber(), Graphics.FONT_XTINY, sideText,
                     Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
 

@@ -1,3 +1,4 @@
+using Toybox.Application;
 using Toybox.WatchUi;
 using Toybox.System;
 
@@ -30,6 +31,7 @@ class EightSleepDelegate extends WatchUi.BehaviorDelegate {
 
     function onSelect() {
         System.println("onSelect (START)");
+        view.closedNote = null;
         view.refresh();
         return true;
     }
@@ -56,6 +58,7 @@ class EightSleepDelegate extends WatchUi.BehaviorDelegate {
     function onBack() {
         var now = System.getTimer();
         if (now - lastBackMs < 2000) {
+            Application.getApp().userExit = true;
             return false;            // second press: let the system exit the app
         }
         lastBackMs = now;
